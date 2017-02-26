@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
             //update color
             ImageButton imgView = (ImageButton)view;
             String color = view.getTag().toString();
+            drawView.setColor(color);
             imgView.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
             currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
             currPaint=(ImageButton)view;

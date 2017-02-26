@@ -109,10 +109,9 @@ public class DrawingView extends View
 
     public void setColor(String newColor){
         //set color
-
-        invalidate();
         paintColor = Color.parseColor(newColor);
         drawPaint.setColor(paintColor);
+        invalidate();
     }
 
     public void setErase(boolean isErase){

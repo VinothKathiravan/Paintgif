@@ -37,16 +37,26 @@
             android:contentDescription="@string/save"
             android:src="@drawable/save" />
     </LinearLayout>
-    <com.rainbowclouds.DrawingView
-        android:id="@+id/drawing"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="3dp"
-        android:layout_weight="1"
-        android:background="#FFFFFFFF" />
+        android:layout_weight="1">
+        <com.rainbowclouds.DrawingView
+            android:id="@+id/drawing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFFFF" />
+        <ImageView
+            android:id="@+id/alphaImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.3"/>
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -41,7 +41,7 @@ public class DrawingView extends View
 
     private void setupDrawing(){
 
-        brushSize = getResources().getInteger(R.integer.medium_size);
+        brushSize = getResources().getInteger(R.integer.small_size);
         lastBrushSize = brushSize;
         drawPath = new Path();
         drawPaint = new Paint();

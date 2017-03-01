@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         }
     }
     public static Bitmap loadBitmapFromView(View v) {
-        Bitmap b = Bitmap.createBitmap( v.getLayoutParams().width+300, v.getLayoutParams().height+350, Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap( v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
         v.draw(c);

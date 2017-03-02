@@ -2,13 +2,18 @@ package com.rainbowclouds;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 import java.util.UUID;
 import android.provider.MediaStore;
 import android.app.AlertDialog;
@@ -34,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
     private ImageButton currPaint, drawBtn, eraseBtn, newBtn, saveBtn;
 
     private int brushSize, eraserSize;
+
+    private ArrayList<Bitmap> lstBitmaps;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         saveBtn.setOnClickListener(this);
 
         drawView.setBrushSize(smallBrush);
+
+        lstBitmaps = new ArrayList<>();
 
     }
 
@@ -196,21 +205,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
             brushDialog.show();
         }else if(view.getId()==R.id.new_btn){
             //new button
-            AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
-            newDialog.setTitle("New drawing");
-            newDialog.setMessage("Start new drawing (you will lose the current drawing)?");
-            newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
-                    drawView.startNew();
-                    dialog.dismiss();
-                }
-            });
-            newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
-                    dialog.cancel();
-                }
-            });
-            newDialog.show();
+            startTimer();
+//            AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
+//            newDialog.setTitle("New drawing");
+//            newDialog.setMessage("Start new drawing (you will lose the current drawing)?");
+//            newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+//                public void onClick(DialogInterface dialog, int which){
+//                    drawView.startNew();
+//                    dialog.dismiss();
+//                }
+//            });
+//            newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+//                public void onClick(DialogInterface dialog, int which){
+//                    dialog.cancel();
+//                }
+//            });
+//            newDialog.show();
+
         }else if(view.getId()==R.id.save_btn){
             //save drawing
             AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
@@ -219,7 +230,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
             saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
                 public void onClick(DialogInterface dialog, int which){
                     //save drawing
-                    alphaImage.setImageBitmap(loadBitmapFromView(drawView));
+                    Bitmap paintedImage = loadBitmapFromView(drawView);
+                    alphaImage.setImageBitmap(paintedImage);
+                    lstBitmaps.add(paintedImage);
 //                    String imgSaved = MediaStore.Images.Media.insertImage(
 //                            getContentResolver(), drawView.getDrawingCache(),
 //                            UUID.randomUUID().toString()+".png", "drawing");
@@ -233,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
 //                                "Oops! Image could not be saved.", Toast.LENGTH_SHORT);
 //                        unsavedToast.show();
 //                    }
+                    drawView.startNew();
                     drawView.destroyDrawingCache();
                 }
             });
@@ -254,4 +268,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         return b;
     }
 
+    private void startTimer() {
+        AnimationDrawable anim = new AnimationDrawable();
+        for(Bitmap bitmap : lstBitmaps)
+        anim.addFrame(new BitmapDrawable(getResources(), bitmap),
+                250);
+        //......So on, so forth until you have a satisfying animation sequence
+
+
+        //set ImageView to AnimatedDrawable
+        alphaImage.setImageDrawable(anim);
+
+        //if you want the animation to loop, set false
+        anim.setOneShot(false);
+        anim.start();
+    }
 }

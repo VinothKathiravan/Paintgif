@@ -232,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
                     //save drawing
                     Bitmap paintedImage = loadBitmapFromView(drawView);
                     alphaImage.setImageBitmap(paintedImage);
+                    alphaImage.setAlpha(0.3f);
                     lstBitmaps.add(paintedImage);
 //                    String imgSaved = MediaStore.Images.Media.insertImage(
 //                            getContentResolver(), drawView.getDrawingCache(),
@@ -278,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
 
         //set ImageView to AnimatedDrawable
         alphaImage.setImageDrawable(anim);
+        alphaImage.setAlpha(1f);
 
         //if you want the animation to loop, set false
         anim.setOneShot(false);

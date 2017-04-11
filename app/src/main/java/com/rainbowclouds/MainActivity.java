@@ -1,10 +1,12 @@
 package com.rainbowclouds;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 import android.provider.MediaStore;
@@ -206,6 +211,21 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         }else if(view.getId()==R.id.new_btn){
             //new button
             startTimer();
+            FileOutputStream outStream = null;
+            try{
+                String root = Environment.getExternalStorageDirectory().toString();
+                File file = new File(root + "/amazing.gif");
+                if (file.exists())
+                {
+                    file.delete();
+                }
+                file.createNewFile();
+                outStream = new FileOutputStream(file);
+                outStream.write(generateGIF());
+                outStream.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
 //            AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
 //            newDialog.setTitle("New drawing");
 //            newDialog.setMessage("Start new drawing (you will lose the current drawing)?");
@@ -261,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
 
         }
     }
+
     public static Bitmap loadBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap( v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
@@ -271,11 +292,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
 
     private void startTimer() {
         AnimationDrawable anim = new AnimationDrawable();
-        for(Bitmap bitmap : lstBitmaps)
-        anim.addFrame(new BitmapDrawable(getResources(), bitmap),
-                250);
-        //......So on, so forth until you have a satisfying animation sequence
 
+        for(Bitmap bitmap : lstBitmaps) {
+            anim.addFrame(new BitmapDrawable(getResources(), bitmap), 250);
+        }
 
         //set ImageView to AnimatedDrawable
         alphaImage.setImageDrawable(anim);
@@ -284,5 +304,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         //if you want the animation to loop, set false
         anim.setOneShot(false);
         anim.start();
+    }
+
+    public byte[] generateGIF() {
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+        encoder.start(bos);
+        for (Bitmap bitmap : lstBitmaps) {
+            encoder.addFrame(bitmap);
+        }
+        encoder.finish();
+        return bos.toByteArray();
     }
 }

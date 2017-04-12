@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
 
     private float smallBrush, mediumBrush, largeBrush;
 
-    private ImageButton currPaint, drawBtn, eraseBtn, newBtn, saveBtn;
+    private ImageButton currPaint, drawBtn, eraseBtn, newBtn, saveBtn, undoBtn, redoBtn;
 
     private int brushSize, eraserSize;
 
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         drawView = (DrawingView)findViewById(R.id.drawing);
-        drawBtn = (ImageButton)findViewById(R.id.draw_btn);
+
         alphaImage = (ImageView)findViewById(R.id.alphaImage);
         LinearLayout paintLayout = (LinearLayout)findViewById(R.id.paint_colors);
         currPaint = (ImageButton)paintLayout.getChildAt(0);
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
 
         brushSize = (int) smallBrush;
         eraserSize = (int) smallBrush;
+
+        drawBtn = (ImageButton)findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
         eraseBtn = (ImageButton)findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
@@ -71,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         newBtn.setOnClickListener(this);
         saveBtn = (ImageButton)findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
+        undoBtn = (ImageButton)findViewById(R.id.undo_btn);
+        undoBtn.setOnClickListener(this);
+        redoBtn = (ImageButton)findViewById(R.id.redo_btn);
+        redoBtn.setOnClickListener(this);
 
         drawView.setBrushSize(smallBrush);
 
@@ -94,191 +100,114 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         drawView.setBrushSize(drawView.getLastBrushSize());
     }
 
+
     @Override
     public void onClick(View view) {
-        if(view.getId()==R.id.draw_btn){
-            //draw button clicked
-            final Dialog brushDialog = new Dialog(this);
-            brushDialog.setTitle("Brush size:");
-            brushDialog.setContentView(R.layout.brush_chooser);
-            SeekBar brushSizeSelector = (SeekBar) brushDialog.findViewById(R.id.seekBar);
-            brushSizeSelector.setProgress(brushSize);
-            brushSizeSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                }
+        int id = view.getId();
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+        switch (id)
+        {
+            case R.id.draw_btn:
+                //draw button clicked
 
-                }
+                final SeekBar brushSizeSelector = (SeekBar) findViewById(R.id.brushSize);
+                brushSizeSelector.setVisibility(View.VISIBLE);
+                brushSizeSelector.setProgress(brushSize);
+                brushSizeSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    brushSize = seekBar.getProgress();
-                    drawView.setBrushSize(seekBar.getProgress());
-                    drawView.setLastBrushSize(seekBar.getProgress());
-                    drawView.setErase(false);
-                    brushDialog.dismiss();
-                }
-            });
-//            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-//            smallBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setBrushSize(smallBrush);
-//                    drawView.setLastBrushSize(smallBrush);
-//                    drawView.setErase(false);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-//            mediumBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setBrushSize(mediumBrush);
-//                    drawView.setLastBrushSize(mediumBrush);
-//                    drawView.setErase(false);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//
-//            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-//            largeBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setBrushSize(largeBrush);
-//                    drawView.setLastBrushSize(largeBrush);
-//                    drawView.setErase(false);
-//                    brushDialog.dismiss();
-//                }
-//            });
-            brushDialog.show();
-        }else if(view.getId()==R.id.erase_btn){
-            //switch to erase - choose size
-            final Dialog brushDialog = new Dialog(this);
-            brushDialog.setTitle("Eraser size:");
-            brushDialog.setContentView(R.layout.brush_chooser);
-            SeekBar eraserSizeSelector = (SeekBar) brushDialog.findViewById(R.id.seekBar);
-            eraserSizeSelector.setProgress(eraserSize);
-            eraserSizeSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                }
+                    }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
 
-                }
+                    }
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    eraserSize = seekBar.getProgress();
-                    drawView.setErase(true);
-                    drawView.setBrushSize(seekBar.getProgress());
-                    brushDialog.dismiss();
-                }
-            });
-//            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-//            smallBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(smallBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-//            mediumBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(mediumBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-//            largeBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(largeBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
-            brushDialog.show();
-        }else if(view.getId()==R.id.new_btn){
-            //new button
-            startTimer();
-            FileOutputStream outStream = null;
-            try{
-                String root = Environment.getExternalStorageDirectory().toString();
-                File file = new File(root + "/amazing.gif");
-                if (file.exists())
-                {
-                    file.delete();
-                }
-                file.createNewFile();
-                outStream = new FileOutputStream(file);
-                outStream.write(generateGIF());
-                outStream.close();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-//            AlertDialog.Builder newDialog = new AlertDialog.Builder(this);
-//            newDialog.setTitle("New drawing");
-//            newDialog.setMessage("Start new drawing (you will lose the current drawing)?");
-//            newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-//                public void onClick(DialogInterface dialog, int which){
-//                    drawView.startNew();
-//                    dialog.dismiss();
-//                }
-//            });
-//            newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-//                public void onClick(DialogInterface dialog, int which){
-//                    dialog.cancel();
-//                }
-//            });
-//            newDialog.show();
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        brushSize = seekBar.getProgress();
+                        drawView.setBrushSize(seekBar.getProgress());
+                        drawView.setLastBrushSize(seekBar.getProgress());
+                        drawView.setErase(false);
+                        brushSizeSelector.setVisibility(View.GONE);
+                    }
+                });
+                break;
+            case R.id.erase_btn:
+                //switch to erase - choose size
+                final SeekBar eraserSizeSelector = (SeekBar) findViewById(R.id.eraserSize);
+                eraserSizeSelector.setVisibility(View.VISIBLE);
+                eraserSizeSelector.setProgress(eraserSize);
+                eraserSizeSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    }
 
-        }else if(view.getId()==R.id.save_btn){
-            //save drawing
-            AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
-            saveDialog.setTitle("Save drawing");
-            saveDialog.setMessage("Save drawing to device Gallery?");
-            saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
-                    //save drawing
-                    Bitmap paintedImage = loadBitmapFromView(drawView);
-                    alphaImage.setImageBitmap(paintedImage);
-                    alphaImage.setAlpha(0.3f);
-                    lstBitmaps.add(paintedImage);
-//                    String imgSaved = MediaStore.Images.Media.insertImage(
-//                            getContentResolver(), drawView.getDrawingCache(),
-//                            UUID.randomUUID().toString()+".png", "drawing");
-//                    if(imgSaved!=null){
-//                        Toast savedToast = Toast.makeText(getApplicationContext(),
-//                                "Drawing saved to Gallery!", Toast.LENGTH_SHORT);
-//                        savedToast.show();
-//                    }
-//                    else{
-//                        Toast unsavedToast = Toast.makeText(getApplicationContext(),
-//                                "Oops! Image could not be saved.", Toast.LENGTH_SHORT);
-//                        unsavedToast.show();
-//                    }
-                    drawView.startNew();
-                    drawView.destroyDrawingCache();
-                }
-            });
-            saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int which){
-                    dialog.cancel();
-                }
-            });
-            saveDialog.show();
-            drawView.setDrawingCacheEnabled(true);
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
 
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        eraserSize = seekBar.getProgress();
+                        drawView.setErase(true);
+                        drawView.setBrushSize(seekBar.getProgress());
+                        eraserSizeSelector.setVisibility(View.GONE);
+                    }
+                });
+                break;
+            case R.id.new_btn:
+                //new button
+                startTimer();
+                FileOutputStream outStream = null;
+                try{
+                    String root = Environment.getExternalStorageDirectory().toString();
+                    File file = new File(root + "/amazing.gif");
+                    if (file.exists())
+                    {
+                        file.delete();
+                    }
+                    file.createNewFile();
+                    outStream = new FileOutputStream(file);
+                    outStream.write(generateGIF());
+                    outStream.close();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.save_btn:
+                //save drawing
+                AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
+                saveDialog.setTitle("Save drawing");
+                saveDialog.setMessage("Save drawing to device Gallery?");
+                saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int which){
+                        //save drawing
+                        Bitmap paintedImage = loadBitmapFromView(drawView);
+                        alphaImage.setImageBitmap(paintedImage);
+                        alphaImage.setAlpha(0.3f);
+                        lstBitmaps.add(paintedImage);
+                        drawView.startNew();
+                        drawView.destroyDrawingCache();
+                    }
+                });
+                saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int which){
+                        dialog.cancel();
+                    }
+                });
+                saveDialog.show();
+                drawView.setDrawingCacheEnabled(true);
+                break;
+            case R.id.undo_btn:
+//                drawView.undoPaint();
+                break;
+            case R.id.redo_btn:
+//                drawView.redoPaint();
+                break;
         }
     }
 

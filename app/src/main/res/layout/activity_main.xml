@@ -19,43 +19,84 @@
             android:id="@+id/drawing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_above="@+id/color_palatte_layout"
             android:background="#FFFFFFFF" />
         <ImageView
             android:id="@+id/alphaImage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_above="@+id/color_palatte_layout"
+            android:layout_alignParentStart="true" />
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_centerHorizontal="true"
-            android:orientation="horizontal" >
+            android:id="@+id/linearLayout">
             <ImageButton
                 android:id="@+id/new_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="50dp"
                 android:contentDescription="@string/start_new"
                 android:src="@drawable/add_new" />
             <ImageButton
                 android:id="@+id/draw_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@+id/new_btn"
                 android:contentDescription="@string/brush"
                 android:src="@drawable/brush" />
+
             <ImageButton
                 android:id="@+id/erase_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@+id/draw_btn"
                 android:contentDescription="@string/erase"
                 android:src="@drawable/eraser" />
+
             <ImageButton
                 android:id="@+id/save_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@+id/erase_btn"
                 android:contentDescription="@string/save"
                 android:src="@drawable/save" />
-        </LinearLayout>
+            <ImageButton
+                android:id="@+id/undo_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@+id/save_btn"
+                android:contentDescription="@string/unod"
+                android:src="@drawable/ic_undo" />
+            <ImageButton
+                android:id="@+id/redo_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@+id/undo_btn"
+                android:contentDescription="@string/reod"
+                android:src="@drawable/ic_redo" />
+            <SeekBar
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/draw_btn"
+                android:layout_alignStart="@id/draw_btn"
+                android:visibility="gone"
+                android:id="@+id/brushSize"
+                android:max="50"/>
+            <SeekBar
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/draw_btn"
+                android:layout_alignStart="@id/erase_btn"
+                android:visibility="gone"
+                android:id="@+id/eraserSize"
+                android:max="50"/>
+        </RelativeLayout>
         <LinearLayout
+            android:id="@+id/color_palatte_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"

@@ -7,6 +7,8 @@
     <string name="brush">Brush</string>
     <string name="erase">Erase</string>
     <string name="save">Save</string>
+    <string name="unod">Undo</string>
+    <string name="reod">Redo</string>
     <string name="paint">Paint</string>
 
 
